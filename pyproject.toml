@@ -11,6 +11,8 @@ fastapi = "^0.104.1"
 apscheduler = "^3.10.4"
 uvicorn = "^0.24.0.post1"
 fastapi-utils = "^0.2.1"
+python-dotenv = "^1.0.0"
+httpx = "^0.25.2"
 
 
 [build-system]
