@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "draft polling"
+version = "0.1.0"
+description = ""
+authors = ["Giorgos Gagrinas <gagrinas.g@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.104.1"
+apscheduler = "^3.10.4"
+uvicorn = "^0.24.0.post1"
+fastapi-utils = "^0.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
