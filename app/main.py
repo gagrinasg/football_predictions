@@ -30,6 +30,16 @@ async def get_predictions_for_fixture(fixture_id: int):
     predictions = await api_client.get_predictions_for_fixture(fixture_id)
     return predictions
 
+@app.get("/live")
+async def get_live_fixtures():
+    live_fixtures = await api_client.get_live_fixtures()
+    return live_fixtures
+
+@app.get('/get_pred')
+async def get_pred():
+    prediction = await api_client.get_prediction_for_fixture('test_id')
+    return prediction
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run('main:app', host="127.0.0.1", port=8000, reload=True)

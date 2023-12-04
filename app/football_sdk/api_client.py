@@ -17,4 +17,21 @@ class FootballAPIClient:
     async def get_predictions_for_fixture(self, fixture_id):
         path = f"/predictions"
         params = {"fixture": fixture_id}
-        return await self._make_authenticated_request("GET", path, params=params)
+        response = await self._make_authenticated_request("GET", path, params=params)
+        return response['response'][0]['predictions']['advice']
+    
+    async def get_live_fixtures(self):
+        path = f"/fixtures"
+        params = {"live": 'all'}
+        response = await self._make_authenticated_request("GET", path, params=params)
+        fixtures_array = [fixture_details['fixture']['id'] for fixture_details in response['response']]
+        return fixtures_array
+    
+    async def get_prediction_for_fixture(self, fixture_id):
+        fixtures_array = await self.get_live_fixtures()
+
+        fixture_id = fixtures_array[0]
+
+        fixture_prediction = await self.get_predictions_for_fixture(fixture_id)
+
+        return fixture_prediction
