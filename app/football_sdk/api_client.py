@@ -1,5 +1,5 @@
 import httpx
-
+from redis.redis_connector import RedisConnector
 class FootballAPIClient:
     def __init__(self, api_key):
         self.api_key = api_key
@@ -30,6 +30,7 @@ class FootballAPIClient:
     async def get_prediction_for_fixture(self, fixture_id):
         fixtures_array = await self.get_live_fixtures()
 
+        redis = self.redis_connector.get_redis()
         fixture_id = fixtures_array[0]
 
         fixture_prediction = await self.get_predictions_for_fixture(fixture_id)
