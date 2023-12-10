@@ -6,22 +6,39 @@ from dotenv import load_dotenv
 
 from decorators.custom_decorators import repeat_every
 from football_sdk.api_client import FootballAPIClient
+from core.telegram import TelegramHandler
+
+from telethon.sessions import StringSession
+from telethon import TelegramClient, events, sync
 
 # Loading enviromental variables from .env file
 load_dotenv()
 
+api_id = os.getenv('TELEGRAM_API_ID')
+api_hash = os.getenv('TELEGRAM_API_HASH')
+
+
+@repeat_every(seconds=2)
+async def send_message(client):
+    async with client:
+        await client.connect()
+        message = 'Hello, Telegram!'
+        group_entity = await client.get_entity("t.me/BetSmartHub")
+        await client.send_message(entity=group_entity,message=message)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print_test()
+    
+    client = TelegramClient('session_id',api_id,api_hash)
+    await send_message(client)
     yield
 
 app = FastAPI(lifespan=lifespan)
 
-@repeat_every(seconds=30000) 
+@repeat_every(seconds=1) 
 def print_test() -> None:
     print('test')
 
-app = FastAPI()
 api_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY'))
 
 
@@ -42,4 +59,4 @@ async def get_pred():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run('main:app', host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run('main:app', host="127.0.0.1", port=8000,reload=True)
