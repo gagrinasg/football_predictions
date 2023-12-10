@@ -35,3 +35,9 @@ class FootballAPIClient:
         fixture_prediction = await self.get_predictions_for_fixture(fixture_id)
 
         return fixture_prediction
+    
+    async def get_live_prediction_for_ongoing_match(self):
+        live_fixtures = await self.get_live_fixtures()
+        live_fixture_id = live_fixtures[0]
+        live_fixture_prediction = await self.get_predictions_for_fixture(live_fixture_id)
+        return live_fixture_prediction
