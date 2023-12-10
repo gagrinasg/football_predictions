@@ -10,26 +10,35 @@ class TelegramHandler():
         # Make sure to pass the required arguments to the superclass's __init__ method
         self.api_hash = api_hash
         self.api_id = api_id
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        self.session_id = f'bot_session_{timestamp}'
     
-    async def get_telegram_client(self):
-        if not hasattr(self, "_client"):
-            timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-            session_name = f'bot_session_{timestamp}'
+    async def start(self):
+        self.client = TelegramClient(self.session_id, self.api_id, self.api_hash)
+        await self.client.start()
+    # async def __aenter__(self):
+    #     self.client = TelegramClient(self.session_id, self.api_id, self.api_hash)
+    #     await self.client.start()
+    #     return self.client
 
-            client = TelegramClient(session_name, self.api_id, self.api_hash)
+    # async def get_telegram_client(self):
+    #     if not hasattr(self, "_client"):
+    #         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    #         session_name = f'bot_session_{timestamp}'
 
-            async with client:
-                # Await the connect method
-                await client.connect()
+    #         client = TelegramClient(session_name, self.api_id, self.api_hash)
 
-                # You can perform additional initialization steps here if needed
+    #         async with client:
+    #             # Await the connect method
+    #             await client.connect()
 
-                self._client = client
+    #             # You can perform additional initialization steps here if needed
 
-        return self._client
+    #             self._client = client
+
+    #     return self._client
 
     @staticmethod
-    @repeat_every(seconds=5)
     async def send_message(self, chat_id, text):
         """
         Send a message to a chat

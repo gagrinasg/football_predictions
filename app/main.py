@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from dotenv import load_dotenv
 
 from decorators.custom_decorators import repeat_every
@@ -20,27 +20,40 @@ api_hash = os.getenv('TELEGRAM_API_HASH')
 
 @repeat_every(seconds=2)
 async def send_message(client):
-    async with client:
-        await client.connect()
-        message = 'Hello, Telegram!'
-        group_entity = await client.get_entity("t.me/BetSmartHub")
-        await client.send_message(entity=group_entity,message=message)
+    message = 'Hello, Telegram!'
+    group_entity = await client.get_entity("t.me/BetSmartHub")
+    await client.send_message(entity=group_entity,message=message)
+
+# async def send_prediction_to_telegram(prediction):
+    # await client.send_message(entity=group_entity,message=message)
+
+async def get_telegram_client():
+    client = TelegramHandler(api_id,api_hash)
+    await client.start()
+    try:
+        return client.client
+    except Exception as e:
+        print(e)
+    # finally:
+    #     await client.disconnect()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    
-    client = TelegramClient('session_id',api_id,api_hash)
-    await send_message(client)
+    app.state.telegram_client = await get_telegram_client()
+    # client = TelegramHandler(api_id,api_hash)
+    # await client.start()
     yield
 
 app = FastAPI(lifespan=lifespan)
 
-@repeat_every(seconds=1) 
-def print_test() -> None:
-    print('test')
-
 api_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY'))
 
+@app.get("/test")
+async def test():
+    prediction = await api_client.get_live_prediction_for_ongoing_match()
+    group_entity = await app.state.telegram_client.get_entity("t.me/BetSmartHub")
+    await app.state.telegram_client.send_message(entity=group_entity,message=prediction)
 
 @app.get("/predictions/{fixture_id}")
 async def get_predictions_for_fixture(fixture_id: int):
