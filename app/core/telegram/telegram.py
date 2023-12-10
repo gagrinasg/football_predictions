@@ -19,16 +19,14 @@ class TelegramHandler():
     async def start(self):
         self.client = TelegramClient(self.session_id, self.api_id, self.api_hash)
         await self.client.start()
-        # self.client.session.save()
 
-    @staticmethod
-    async def send_message(self, chat_id, text):
+    async def send_message(self, prediction):
         """
         Send a message to a chat
         :param chat_id: chat id
         :param text: message text
         :return: None
         """
-        async with self._client:
-            group_entity = await self._client.get_entity("https://t.me/+uA1XW4x1B1c0YWFk")
-            await self._client.send_message(entity=group_entity,message='Hello, Telegram!')
+        async with self.client:
+            channel_entity = await self.client.get_entity("t.me/BetSmartHub")
+            await self.client.send_message(entity=channel_entity,message=prediction)

@@ -14,12 +14,10 @@ load_dotenv()
 api_id = os.getenv('TELEGRAM_API_ID')
 api_hash = os.getenv('TELEGRAM_API_HASH')
 
-
-@repeat_every(seconds=2)
-async def send_message(client):
-    message = 'Hello, Telegram!'
-    group_entity = await client.get_entity("t.me/BetSmartHub")
-    await client.send_message(entity=group_entity,message=message)
+@repeat_every(seconds=15)
+async def send_message():
+    prediction = await app.state.football_client.get_live_prediction_for_ongoing_match()
+    await app.state.telegram_client.send_message(prediction)
 
 # async def send_prediction_to_telegram(prediction):
     # await client.send_message(entity=group_entity,message=message)
@@ -28,7 +26,7 @@ async def get_telegram_client():
     client = TelegramHandler(api_id,api_hash)
     await client.start()
     try:
-        return client.client
+        return client
     except Exception as e:
         print(e)
 
@@ -36,11 +34,10 @@ async def get_telegram_client():
 async def lifespan(app: FastAPI):
     app.state.telegram_client = await get_telegram_client()
     app.state.football_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY')) 
+    await send_message()
     yield
 
 app = FastAPI(lifespan=lifespan)
-
-# api_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY'))
 
 @app.get("/test")
 async def test():
