@@ -11,10 +11,11 @@ class TelegramHandler():
         # Make sure to pass the required arguments to the superclass's __init__ method
         self.api_hash = api_hash
         self.api_id = api_id
-        # timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        # self.session_id = f'bot_session'
-        # self.session_id = 'C:\\Users\\George\\Desktop\\Programming\\Projects\\draft polling\\bot_session'
-        self.session_id = r'C:/Users/George/Desktop/Programming/Projects\draft_polling\app\core\telegram\session\bot_session'
+        # Crete session directory if does not exist
+        session_directory = os.path.join(os.getcwd(), 'app\\core\\telegram\\session')
+        if not os.path.isdir(session_directory):
+            os.makedirs(session_directory)
+        self.session_id = session_directory + '\\bot_session'
     
     async def start(self):
         self.client = TelegramClient(self.session_id, self.api_id, self.api_hash)
