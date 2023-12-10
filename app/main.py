@@ -34,40 +34,36 @@ async def get_telegram_client():
         return client.client
     except Exception as e:
         print(e)
-    # finally:
-    #     await client.disconnect()
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.telegram_client = await get_telegram_client()
-    # client = TelegramHandler(api_id,api_hash)
-    # await client.start()
+    app.state.football_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY')) 
     yield
 
 app = FastAPI(lifespan=lifespan)
 
-api_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY'))
+# api_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY'))
 
 @app.get("/test")
 async def test():
-    prediction = await api_client.get_live_prediction_for_ongoing_match()
+    prediction = await app.state.football_client.get_live_prediction_for_ongoing_match()
     group_entity = await app.state.telegram_client.get_entity("t.me/BetSmartHub")
     await app.state.telegram_client.send_message(entity=group_entity,message=prediction)
 
 @app.get("/predictions/{fixture_id}")
 async def get_predictions_for_fixture(fixture_id: int):
-    predictions = await api_client.get_predictions_for_fixture(fixture_id)
+    predictions = await app.state.football_client.get_predictions_for_fixture(fixture_id)
     return predictions
 
 @app.get("/live")
 async def get_live_fixtures():
-    live_fixtures = await api_client.get_live_fixtures()
+    live_fixtures = await app.state.football_client.get_live_fixtures()
     return live_fixtures
 
 @app.get('/get_pred')
 async def get_pred():
-    prediction = await api_client.get_prediction_for_fixture('test_id')
+    prediction = await app.state.football_client.get_prediction_for_fixture('test_id')
     return prediction
 
 if __name__ == "__main__":

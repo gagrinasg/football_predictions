@@ -16,27 +16,6 @@ class TelegramHandler():
     async def start(self):
         self.client = TelegramClient(self.session_id, self.api_id, self.api_hash)
         await self.client.start()
-    # async def __aenter__(self):
-    #     self.client = TelegramClient(self.session_id, self.api_id, self.api_hash)
-    #     await self.client.start()
-    #     return self.client
-
-    # async def get_telegram_client(self):
-    #     if not hasattr(self, "_client"):
-    #         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-    #         session_name = f'bot_session_{timestamp}'
-
-    #         client = TelegramClient(session_name, self.api_id, self.api_hash)
-
-    #         async with client:
-    #             # Await the connect method
-    #             await client.connect()
-
-    #             # You can perform additional initialization steps here if needed
-
-    #             self._client = client
-
-    #     return self._client
 
     @staticmethod
     async def send_message(self, chat_id, text):
