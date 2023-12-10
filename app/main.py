@@ -6,10 +6,7 @@ from dotenv import load_dotenv
 
 from decorators.custom_decorators import repeat_every
 from football_sdk.api_client import FootballAPIClient
-from core.telegram import TelegramHandler
-
-from telethon.sessions import StringSession
-from telethon import TelegramClient, events, sync
+from core.telegram.telegram import TelegramHandler
 
 # Loading enviromental variables from .env file
 load_dotenv()
