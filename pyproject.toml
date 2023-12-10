@@ -13,6 +13,7 @@ uvicorn = "^0.24.0.post1"
 fastapi-utils = "^0.2.1"
 python-dotenv = "^1.0.0"
 httpx = "^0.25.2"
+telethon = "^1.33.1"
 
 
 [build-system]
