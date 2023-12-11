@@ -1,0 +1,31 @@
+version: '3.7'
+
+volumes:
+  redis_data:
+
+services:
+  redis:
+    image: 'redis:6.0.6'
+    ports:
+      - '127.0.0.1:6379:6379/tcp'
+    volumes:
+      - 'redis_data:/data:rw'
+      - C:/Users/George/Desktop/Programming/Projects/draft_polling/app/redis_client/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: redis-cli ping
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  redisinsight:
+    image: 'redislabs/redisinsight:latest'
+    ports:
+      - '127.0.0.1:8001:8001'
+
+  fastapi_app:
+    image: 'your-fastapi-image:tag'  # Replace with the actual image and tag for your FastAPI application
+    ports:
+      - '127.0.0.1:8000:8000'  # Adjust the port if needed
+    depends_on:
+      - redis  # Make sure FastAPI starts after the Redis service

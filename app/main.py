@@ -3,6 +3,7 @@ import os
 
 from fastapi import FastAPI, Depends
 from dotenv import load_dotenv
+# from redis import RedisConnector
 
 from decorators.custom_decorators import repeat_every
 from football_sdk.api_client import FootballAPIClient
@@ -34,7 +35,7 @@ async def get_telegram_client():
 async def lifespan(app: FastAPI):
     app.state.telegram_client = await get_telegram_client()
     app.state.football_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY')) 
-    # await send_message()
+    await send_message()
     yield
 
 app = FastAPI(lifespan=lifespan)

@@ -1,5 +1,7 @@
 import httpx
-from redis.redis_connector import RedisConnector
+import json 
+
+from redis_client.redis_connector import RedisConnector
 class FootballAPIClient:
     def __init__(self, api_key):
         self.api_key = api_key
@@ -30,10 +32,22 @@ class FootballAPIClient:
     async def get_prediction_for_fixture(self, fixture_id):
         fixtures_array = await self.get_live_fixtures()
 
+        # Define the key where the fixtures are stored in the Redis DB
+        fixtures_set_key = "live_fixtures"
+
         redis = self.redis_connector.get_redis()
-        fixture_id = fixtures_array[0]
+
+        # If the set is empty, refill it with fixture IDs
+        if not redis.scard(fixtures_set_key):
+            redis.sadd(fixtures_set_key, *fixtures_array)
+
+        # Pop a fixture ID from the set
+        fixture_id = redis.spop(fixtures_set_key)
 
         fixture_prediction = await self.get_predictions_for_fixture(fixture_id)
+        
+        # Store the updated set back in Redis
+        redis.set(fixtures_set_key, json.dumps(list(redis.smembers(fixtures_set_key))))
 
         return fixture_prediction
     
