@@ -1,3 +1,5 @@
+import logging
+
 from redis import Redis
 
 class RedisConnector:
@@ -8,4 +10,8 @@ class RedisConnector:
             print(f"Error connecting to Redis: {e}")
 
     def get_redis(self):
+        """
+        Returns the Redis instance
+        """
+        logging.info('Getting Redis client')
         return self.redis

@@ -1,5 +1,6 @@
 import httpx
-import json 
+import json
+import logging
 
 from app.redis_client.redis_connector import RedisConnector
 class FootballAPIClient:
@@ -7,6 +8,7 @@ class FootballAPIClient:
         self.api_key = api_key
         self.base_url = 'https://api-football-v1.p.rapidapi.com/v3'
         self.authentication_header = "X-RapidAPI-Key"
+        self.redis_connector = RedisConnector()
 
     async def _make_authenticated_request(self, method, path, **kwargs):
         url = f"{self.base_url}{path}"
@@ -23,6 +25,7 @@ class FootballAPIClient:
         return response['response'][0]['predictions']['advice']
     
     async def get_live_fixtures(self):
+        logging.info('Getting live fixtures...')
         path = f"/fixtures"
         params = {"live": 'all'}
         response = await self._make_authenticated_request("GET", path, params=params)
@@ -32,27 +35,55 @@ class FootballAPIClient:
     async def get_prediction_for_fixture(self, fixture_id):
         fixtures_array = await self.get_live_fixtures()
 
-        # Define the key where the fixtures are stored in the Redis DB
-        fixtures_set_key = "live_fixtures"
-
         redis = self.redis_connector.get_redis()
 
+        # Define the key where the fixtures to be served are stored in the Redis DB
+        fixtures_to_serve = "fixtures_to_serve"
+
+        # Define the key where the fixtures that are already served are stored in the Redis DB
+        fixtures_served = "fixtures_served"
+
         # If the set is empty, refill it with fixture IDs
-        if not redis.scard(fixtures_set_key):
-            redis.sadd(fixtures_set_key, *fixtures_array)
+        if not redis.scard(fixtures_to_serve):
+            redis.sadd(fixtures_to_serve, *fixtures_array)
 
         # Pop a fixture ID from the set
-        fixture_id = redis.spop(fixtures_set_key)
+        fixture_id = redis.spop(fixtures_to_serve)
+
+        # Add the served fixture to the served fixture set
+        redis.sadd(fixtures_served, fixture_id)
+
+        # Convert fixture from bytes to string
+        fixture_id = fixture_id.decode('utf-8')
 
         fixture_prediction = await self.get_predictions_for_fixture(fixture_id)
         
-        # Store the updated set back in Redis
-        redis.set(fixtures_set_key, json.dumps(list(redis.smembers(fixtures_set_key))))
-
         return fixture_prediction
     
     async def get_live_prediction_for_ongoing_match(self):
         live_fixtures = await self.get_live_fixtures()
-        live_fixture_id = live_fixtures[0]
-        live_fixture_prediction = await self.get_predictions_for_fixture(live_fixture_id)
+
+        redis = self.redis_connector.get_redis()
+
+        # Define the key where the fixtures to be served are stored in the Redis DB
+        fixtures_to_serve = "fixtures_to_serve"
+
+        # Define the key where the fixtures that are already served are stored in the Redis DB
+        fixtures_served = "fixtures_served"
+
+        # If the set is empty, refill it with fixture IDs
+        if not redis.scard(fixtures_to_serve):
+            redis.sadd(fixtures_to_serve, *live_fixtures)
+
+        # Pop a fixture ID from the set
+        fixture_id = redis.spop(fixtures_to_serve)
+
+        # Add the served fixture to the served fixture set
+        redis.sadd(fixtures_served, fixture_id)
+
+        # Convert fixture from bytes to string
+        fixture_id = fixture_id.decode('utf-8')
+
+        live_fixture_prediction = await self.get_predictions_for_fixture(fixture_id)
+        
         return live_fixture_prediction
