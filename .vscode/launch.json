@@ -1,0 +1,24 @@
+{
+    // Note: Important Info
+    // 1. my main python code file name is app.py
+    // 2. My app.py location is at the root (not inside any folder)
+    // 3. My Python 3.9 runtime has all required packages..
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name":"test",
+            "module": "uvicorn",
+            "type": "python",
+            "request": "launch",
+            "args": [
+                "app.main:app",
+                "--reload",
+                "--port",
+                "8000"
+            ],
+            "env": {
+                "usersecret": "some$Ecret",
+            }
+        }
+    ]
+}
