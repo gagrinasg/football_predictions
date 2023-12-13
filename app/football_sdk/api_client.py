@@ -1,7 +1,7 @@
 import httpx
 import json 
 
-from redis_client.redis_connector import RedisConnector
+from app.redis_client.redis_connector import RedisConnector
 class FootballAPIClient:
     def __init__(self, api_key):
         self.api_key = api_key

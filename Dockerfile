@@ -1,31 +1,17 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9
+FROM python:3.9-slim
 
-# Set the working directory in the container
+# Set the working directory to /app
 WORKDIR /app
 
-# Copy the entire project to the container
+# Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install Poetry
-RUN pip install poetry==1.6.1 \
-    && poetry --version
-
-# Install dependencies
-RUN poetry install --no-dev --no-interaction --no-ansi
-
-# Create a virtual environment
-RUN python -m venv /venv
-ENV PATH="/venv/bin:$PATH"
-
-# Install uvicorn within the virtual environment
-RUN /venv/bin/pip install uvicorn
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
-# Define environment variable
-ENV PYTHONUNBUFFERED=1
-
-# Run uvicorn when the container launches
+# Run app.py when the container launches
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

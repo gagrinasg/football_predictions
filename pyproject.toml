@@ -13,13 +13,13 @@ uvicorn = "^0.24.0.post1"
 fastapi-utils = "^0.2.1"
 python-dotenv = "^1.0.0"
 httpx = "^0.25.2"
-<<<<<<< Updated upstream
-=======
 telethon = "^1.33.1"
 redis = "^5.0.1"
->>>>>>> Stashed changes
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start = "uvicorn app.main:app"

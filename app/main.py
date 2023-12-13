@@ -1,13 +1,13 @@
 from contextlib import asynccontextmanager
 import os
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends,BackgroundTasks
 from dotenv import load_dotenv
 # from redis import RedisConnector
 
-from decorators.custom_decorators import repeat_every
-from football_sdk.api_client import FootballAPIClient
-from core.telegram.telegram import TelegramHandler
+from app.decorators.custom_decorators import repeat_every
+from app.football_sdk.api_client import FootballAPIClient
+from app.core.telegram.telegram import TelegramHandler
 
 # Loading enviromental variables from .env file
 load_dotenv()
@@ -15,7 +15,7 @@ load_dotenv()
 api_id = os.getenv('TELEGRAM_API_ID')
 api_hash = os.getenv('TELEGRAM_API_HASH')
 
-@repeat_every(seconds=15)
+@repeat_every(seconds=30)
 async def send_message():
     prediction = await app.state.football_client.get_live_prediction_for_ongoing_match()
     await app.state.telegram_client.send_message(prediction)
@@ -32,13 +32,13 @@ async def get_telegram_client():
         print(e)
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI, background_tasks: BackgroundTasks):
     app.state.telegram_client = await get_telegram_client()
     app.state.football_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY')) 
-    await send_message()
+    background_tasks.add_task(await send_message())
     yield
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan,background_tasks)
 
 @app.get("/test")
 async def test():

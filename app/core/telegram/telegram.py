@@ -1,10 +1,11 @@
 import os
 import datetime
+import logging
 
 from telethon import TelegramClient, events, sync
 from telethon.sessions import StringSession
 
-from decorators.custom_decorators import repeat_every
+from app.decorators.custom_decorators import repeat_every
 
 class TelegramHandler():
     def __init__(self, api_id,api_hash):
@@ -12,7 +13,7 @@ class TelegramHandler():
         self.api_hash = api_hash
         self.api_id = api_id
         # Crete session directory if does not exist
-        session_directory = os.path.join(os.getcwd(), 'app\\core\\telegram\\session')
+        session_directory = os.path.join(os.getcwd(), 'session')
         if not os.path.isdir(session_directory):
             os.makedirs(session_directory)
         self.session_id = session_directory + '\\bot_session'
@@ -31,3 +32,4 @@ class TelegramHandler():
         async with self.client:
             channel_entity = await self.client.get_entity("t.me/BetSmartHub")
             await self.client.send_message(entity=channel_entity,message=prediction)
+            logging.info(f'Sent prediction {prediction}')
