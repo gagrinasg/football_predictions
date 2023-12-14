@@ -6,7 +6,7 @@ from fastapi import FastAPI, Depends,BackgroundTasks
 from dotenv import load_dotenv
 # from redis import RedisConnector
 
-from app.decorators.custom_decorators import repeat_every
+# from app.decorators.custom_decorators import repeat_every
 from app.football_sdk.api_client import FootballAPIClient
 from app.core.telegram.telegram import TelegramHandler
 from app.helpers.background_task import BackgroundRunner

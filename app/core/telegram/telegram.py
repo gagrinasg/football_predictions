@@ -13,13 +13,14 @@ class TelegramHandler():
         self.api_hash = api_hash
         self.api_id = api_id
         # Crete session directory if does not exist
-        session_directory = os.path.join(os.getcwd(), 'session')
-        if not os.path.isdir(session_directory):
-            os.makedirs(session_directory)
-        self.session_id = session_directory + '\\bot_session'
-    
+        # session_directory = os.path.join(os.getcwd(), 'session')
+        # if not os.path.isdir(session_directory):
+        #     os.makedirs(session_directory)
+        # self.session_id = session_directory + '\\bot_session'
+        self.session_string = os.getenv('SESSION_STRING')
+
     async def start(self):
-        self.client = TelegramClient(self.session_id, self.api_id, self.api_hash)
+        self.client = TelegramClient(StringSession(self.session_string), self.api_id, self.api_hash)
         await self.client.start()
 
     async def send_message(self, prediction):
