@@ -34,3 +34,10 @@ class TelegramHandler():
             channel_entity = await self.client.get_entity("t.me/BetSmartHub")
             await self.client.send_message(entity=channel_entity,message=prediction)
             logging.info(f'Sent prediction {prediction}')
+
+    async def send_message_with_photo(self,prediction,screenshot_path):
+        async with self.client:
+            channel_entity = await self.client.get_entity("t.me/BetSmartHub")
+            await self.client.send_file(entity=channel_entity, file=screenshot_path, caption=prediction)
+            # TODO remove screenshot after sending
+            logging.info(f'Sent prediction {prediction}')

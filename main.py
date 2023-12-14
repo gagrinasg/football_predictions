@@ -2,9 +2,8 @@ from contextlib import asynccontextmanager
 import os
 import asyncio
 
-from fastapi import FastAPI, Depends,BackgroundTasks
+from fastapi import FastAPI
 from dotenv import load_dotenv
-# from redis import RedisConnector
 
 # from app.decorators.custom_decorators import repeat_every
 from app.football_sdk.api_client import FootballAPIClient
@@ -67,4 +66,4 @@ async def get_pred():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run('main:app', host="127.0.0.1", port=8000,reload=True)
+    uvicorn.run('main:app', host="127.0.0.1", port=8000)

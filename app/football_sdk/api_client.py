@@ -1,6 +1,7 @@
 import httpx
 import json
 import logging
+import os
 
 from app.redis_client.redis_connector import RedisConnector
 class FootballAPIClient:
@@ -86,4 +87,4 @@ class FootballAPIClient:
 
         live_fixture_prediction = await self.get_predictions_for_fixture(fixture_id)
         
-        return live_fixture_prediction
+        return live_fixture_prediction , fixture_id
