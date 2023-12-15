@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.4'
 
 volumes:
   redis_data:
@@ -21,11 +21,14 @@ services:
   redisinsight:
     image: 'redislabs/redisinsight:latest'
     ports:
-      - '127.0.0.1:8001:8001'
-
-  fastapi_app:
-    image: 'football-prediction:latest'  # Replace with the actual image and tag for your FastAPI application
+      - '8001:8001'
+      
+  footballprediction:
+    image: footballprediction
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn main:app --host 0.0.0.0 --port 8000"]
     ports:
-      - '127.0.0.1:8000:8000'  # Adjust the port if needed
-    depends_on:
-      - redis
+      - 8000:8000
+      - 5678:5678

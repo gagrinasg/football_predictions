@@ -1,0 +1,34 @@
+version: '3.4'
+
+volumes:
+  redis_data:
+
+services:
+  redis:
+    image: 'redis:6.0.6'
+    ports:
+      - '127.0.0.1:6379:6379/tcp'
+    volumes:
+      - 'redis_data:/data:rw'
+      - C:/Users/George/Desktop/Programming/Projects/draft_polling/app/redis_client/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: redis-cli ping
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  redisinsight:
+    image: 'redislabs/redisinsight:latest'
+    ports:
+      - '8001:8001'
+
+  footballprediction:
+    image: footballprediction
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis

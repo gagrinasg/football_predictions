@@ -6,7 +6,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name":"test",
+            "name": "Debug - Python - Fastapi",
             "module": "uvicorn",
             "type": "python",
             "request": "launch",
@@ -17,7 +17,22 @@
                 "8000"
             ],
             "env": {
-                "usersecret": "some$Ecret",
+                "usersecret": "some$Ecret"
+            }
+        },
+        {
+            "name": "Docker: Python - Fastapi",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app"
+                    }
+                ],
+                "projectType": "fastapi"
             }
         }
     ]
