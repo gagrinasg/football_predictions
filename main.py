@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     app.state.telegram_client = await get_telegram_client()
     app.state.football_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY')) 
     seconds = 15
-    asyncio.create_task(background_runner.send_message(app,seconds))
+    asyncio.create_task(background_runner.send_message(seconds=seconds,football_client=app.state.football_client,telegram_client=app.state.telegram_client))
     yield
 
 app = FastAPI(lifespan=lifespan)
