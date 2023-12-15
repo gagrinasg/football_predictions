@@ -5,8 +5,6 @@ import logging
 from telethon import TelegramClient, events, sync
 from telethon.sessions import StringSession
 
-from app.decorators.custom_decorators import repeat_every
-
 class TelegramHandler():
     def __init__(self, api_id,api_hash):
         # Make sure to pass the required arguments to the superclass's __init__ method

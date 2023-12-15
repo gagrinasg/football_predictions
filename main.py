@@ -6,9 +6,9 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 
 # from app.decorators.custom_decorators import repeat_every
-from app.football_sdk.api_client import FootballAPIClient
-from app.core.telegram.telegram import TelegramHandler
-from app.helpers.background_task import BackgroundRunner
+from src.football_sdk.api_client import FootballAPIClient
+from src.core.telegram.telegram import TelegramHandler
+from src.helpers.background_task import BackgroundRunner
 
 # Loading enviromental variables from .env file
 load_dotenv()
@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     app.state.telegram_client = await get_telegram_client()
     app.state.football_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY')) 
     seconds = 15
-    asyncio.create_task(background_runner.send_message(seconds,app.state.telegram_client,app.state.football_client))
+    asyncio.create_task(background_runner.send_message(app,seconds))
     yield
 
 app = FastAPI(lifespan=lifespan)
