@@ -75,8 +75,10 @@ class FootballAPIClient:
 
         # If the set is empty, refill it with fixture IDs
         if not redis.scard(fixtures_to_serve):
-            redis.sadd(fixtures_to_serve, *live_fixtures)
-
+            if len(live_fixtures) > 0:
+                redis.sadd(fixtures_to_serve, *live_fixtures)
+            else:
+                return None, None
         # Pop a fixture ID from the set
         fixture_id = redis.spop(fixtures_to_serve)
 
