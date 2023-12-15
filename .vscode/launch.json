@@ -1,24 +1,22 @@
 {
-    // Note: Important Info
-    // 1. my main python code file name is app.py
-    // 2. My app.py location is at the root (not inside any folder)
-    // 3. My Python 3.9 runtime has all required packages..
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name":"test",
-            "module": "uvicorn",
+            "name": "Python: FastAPI",
             "type": "python",
             "request": "launch",
+            "module": "uvicorn",
             "args": [
-                "app.main:app",
+                "main:app",
                 "--reload",
                 "--port",
                 "8000"
             ],
-            "env": {
-                "usersecret": "some$Ecret",
-            }
+            "jinja": true,
+            "justMyCode": true
         }
     ]
 }
