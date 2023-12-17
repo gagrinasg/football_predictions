@@ -4,6 +4,8 @@ import asyncio
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
+import debugpy
+
 
 # from app.decorators.custom_decorators import repeat_every
 from app.football_sdk.api_client import FootballAPIClient
@@ -17,6 +19,8 @@ background_runner = BackgroundRunner()
 api_id = os.getenv('TELEGRAM_API_ID')
 api_hash = os.getenv('TELEGRAM_API_HASH')
 
+# Attach the debugger in case you need it
+debugpy.listen(("0.0.0.0",5678))
 # @repeat_every(seconds=30)
 # async def send_message():
 #     prediction = await app.state.football_client.get_live_prediction_for_ongoing_match()
@@ -39,7 +43,7 @@ async def lifespan(app: FastAPI):
     app.state.football_client = FootballAPIClient(api_key=os.getenv('RAPID_API_KEY')) 
     minutes = 3
     seconds = minutes * 60
-    asyncio.create_task(background_runner.send_message(seconds=seconds,football_client=app.state.football_client,telegram_client=app.state.telegram_client))
+    # asyncio.create_task(background_runner.send_message(seconds=seconds,football_client=app.state.football_client,telegram_client=app.state.telegram_client))
     yield
 
 app = FastAPI(lifespan=lifespan)
@@ -59,6 +63,10 @@ async def get_predictions_for_fixture(fixture_id: int):
 async def get_live_fixtures():
     live_fixtures = await app.state.football_client.get_live_fixtures()
     return live_fixtures
+
+@app.get('/test2')
+def test2():
+    return {'message': 'Hello World'}
 
 @app.get('/get_pred')
 async def get_pred():
