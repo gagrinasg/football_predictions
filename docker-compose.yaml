@@ -24,11 +24,11 @@ services:
   fastapi_app:
     build: .
     # image: 'football-prediction:latest'  # Replace with the actual image and tag for your FastAPI application
-    command: "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    command: "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     ports:
       - '8000:8000'
     volumes:
-      - "./app:/app"
+      - "./:/app"
     depends_on:
       - redis
     environment:
