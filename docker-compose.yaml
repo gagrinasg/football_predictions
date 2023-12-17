@@ -24,7 +24,8 @@ services:
       - '127.0.0.1:8001:8001'
 
   fastapi_app:
-    image: 'football-prediction:latest'  # Replace with the actual image and tag for your FastAPI application
+    build: .
+    # image: 'football-prediction:latest'  # Replace with the actual image and tag for your FastAPI application
     ports:
       - '127.0.0.1:8000:8000'  # Adjust the port if needed
     depends_on:
