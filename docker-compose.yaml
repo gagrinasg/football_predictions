@@ -24,6 +24,7 @@ services:
   fastapi_app:
     build: .
     # image: 'football-prediction:latest'  # Replace with the actual image and tag for your FastAPI application
+    # command: "python -m debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"\
     command: "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     ports:
       - '8000:8000'

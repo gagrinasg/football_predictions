@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9-alpine
+FROM python:3.9-slim
 
 # Set the working directory to /app
 WORKDIR /app
@@ -58,4 +58,4 @@ RUN apt-get update && \
 EXPOSE 8000
 
 # Run app.py when the container launches
-# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
