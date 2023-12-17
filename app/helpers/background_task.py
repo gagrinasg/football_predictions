@@ -2,7 +2,7 @@ import asyncio
 import os
 import emoji
 
-from src.football_sdk.screenshot import screenshot_fixture
+from app.football_sdk.screenshot import screenshot_fixture
 
 class BackgroundRunner:
     def __init__(self):
