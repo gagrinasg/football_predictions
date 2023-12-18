@@ -1,6 +1,22 @@
 {
     "version": "0.2.0",
     "configurations": [
+        {
+            "name": "Python: FastAPI",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app",
+                "--reload",
+                "--host",
+                "localhost",
+                "--port",
+                "8000"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        },
         // This config must be run from vs outside the container
         {
             "name": "Attach to UVicorn",
@@ -16,7 +32,7 @@
                     "remoteRoot": "."
                 }
             ],
-            "justMyCode": true,  // Adjust the port number as needed
+            "justMyCode": true, // Adjust the port number as needed
         }
     ]
 }

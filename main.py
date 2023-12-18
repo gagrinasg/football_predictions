@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 import os
 import asyncio
+import logging
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
@@ -12,6 +13,8 @@ from app.football_sdk.api_client import FootballAPIClient
 from app.core.telegram.telegram import TelegramHandler
 from app.helpers.background_task import BackgroundRunner
 
+logging.basicConfig(level=logging.INFO)
+
 # Loading enviromental variables from .env file
 load_dotenv()
 background_runner = BackgroundRunner()
@@ -20,7 +23,7 @@ api_id = os.getenv('TELEGRAM_API_ID')
 api_hash = os.getenv('TELEGRAM_API_HASH')
 
 # Attach the debugger in case you need it
-debugpy.listen(("0.0.0.0",5678))
+# debugpy.listen(("0.0.0.0",5678))
 # @repeat_every(seconds=30)
 # async def send_message():
 #     prediction = await app.state.football_client.get_live_prediction_for_ongoing_match()
@@ -66,6 +69,7 @@ async def get_live_fixtures():
 
 @app.get('/test2')
 def test2():
+    logging.info('test')
     return {'message': 'Hello World'}
 
 @app.get('/get_pred')

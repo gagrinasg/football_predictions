@@ -5,7 +5,7 @@ poetry export --without-hashes --format=requirements.txt > requirements.txt
 uvicorn main:app --host 0.0.0.0 --port 8000
 
 ## what you should run on the main dir
-uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 
 ## Docker build image from app
 docker build -t football-prediction:latest .
