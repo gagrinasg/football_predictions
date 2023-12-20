@@ -33,7 +33,7 @@ async def screenshot_fixture(fixture_id):
     await page.evaluate('document.getElementById("wg-api-football-game").click()')
 
     # Wait for the script to take effect (you might need to adjust the wait time)
-    await asyncio.sleep(2)
+    await asyncio.sleep(5)
 
     image_path = f'screenshots\\{fixture_id}.png'
 
