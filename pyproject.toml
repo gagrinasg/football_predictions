@@ -20,6 +20,8 @@ requests = "^2.31.0"
 pyppeteer = "^1.0.2"
 emoji = "^2.9.0"
 debugpy = "^1.8.0"
+langchain = "^0.0.352"
+openai = "^1.6.0"
 
 
 [build-system]

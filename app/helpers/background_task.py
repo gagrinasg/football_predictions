@@ -2,25 +2,21 @@ import asyncio
 import os
 import logging
 
-import emoji
-
 from app.football_sdk.screenshot import screenshot_fixture
+from app.core.llms.llm_handler import LLMHandler
 
 class BackgroundRunner:
     def __init__(self):
         self.value = 0
+        self.llm_handler = LLMHandler()
 
     async def send_message(self,seconds,football_client,telegram_client):
         while True:
             try:
                 prediction , fixture_id = await football_client.get_live_prediction_for_ongoing_match()
-                # prediction = 'test'
-                # fixture_id = 1037532
-                # Found fixture to post
-                emojis_before = emoji.emojize('🔥🔥 Live Bet\n💯')
-                emojis_after = emoji.emojize('\n ✅✅✅✅✅✅')
 
-                caption = ''.join([emojis_before,prediction,emojis_after])
+                ai_response = await self.llm_handler._create_message(prediction)
+                caption = ai_response.content
                 if fixture_id:
                     screenshot_path = await screenshot_fixture(fixture_id)
                     await telegram_client.send_message_with_photo(caption,screenshot_path)
